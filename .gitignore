@@ -1,0 +1,12 @@
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.*~
+*.*project*
+*.settings
+.idea
+report
+.coverage
+*.db
+*.egg-info
