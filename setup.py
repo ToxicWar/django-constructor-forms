@@ -5,7 +5,7 @@ setup(
     name='django-constructor-forms',
     version='0.0.1',
     description='Django application for constructing many feedback forms.',
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
     author='Anton Larkin',
     author_email='toxicwar94@yandex.ru',
     license='MIT',
