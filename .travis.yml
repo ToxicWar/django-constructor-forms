@@ -8,6 +8,7 @@ env:
   - DJANGO=1.6.1
 install:
     - pip install Django==$DJANGO
+    - pip install django-nose rednose
     - pip install -e . --use-mirrors
 script:
   - ./constructor_forms/tests/runtests.sh
