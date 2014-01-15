@@ -10,4 +10,4 @@ install:
     - pip install Django==$DJANGO
     - pip install -e . --use-mirrors
 script:
-  - bash constructor_forms/tests/runtests.sh
+  - ./constructor_forms/tests/runtests.sh
