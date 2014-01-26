@@ -1,15 +1,14 @@
 # coding: utf-8
 from __future__ import unicode_literals
 from django.test import TestCase
-from django.db.models import get_model
 from django.utils.timezone import now
-from ..conf import FORM_MODEL, FIELD_MODEL, FORM_ENTRY_MODEL, FIELD_ENTRY_MODEL
+from ..utils import get_model
 
 
-Form = get_model(*FORM_MODEL.split('.'))
-Field = get_model(*FIELD_MODEL.split('.'))
-FormEntry = get_model(*FORM_ENTRY_MODEL.split('.'))
-FieldEntry = get_model(*FIELD_ENTRY_MODEL.split('.'))
+Form = get_model('Form')
+Field = get_model('Field')
+FormEntry = get_model('FormEntry')
+FieldEntry = get_model('FieldEntry')
 
 
 class FormModelTest(TestCase):

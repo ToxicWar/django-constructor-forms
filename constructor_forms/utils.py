@@ -1,7 +1,9 @@
 # coding: utf-8
 from __future__ import unicode_literals
 from django.core.exceptions import ImproperlyConfigured
+from django.db.models import get_model as _get_model
 from django.utils.importlib import import_module
+from .conf import FORM_MODEL, FIELD_MODEL, FORM_ENTRY_MODEL, FIELD_ENTRY_MODEL
 
 
 def unique_slug(manager, slug_field, slug):
@@ -32,3 +34,16 @@ def import_class(import_path):
         return getattr(mod, classname)
     except AttributeError:
         raise ImproperlyConfigured('Module "%s" does not define a "%s" class.' % (module, classname))
+
+
+def get_model(model_name):
+    if model_name == 'Form':
+        return _get_model(*FORM_MODEL.split('.'))
+    elif model_name == 'Field':
+        return _get_model(*FIELD_MODEL.split('.'))
+    elif model_name == 'FormEntry':
+        return _get_model(*FORM_ENTRY_MODEL.split('.'))
+    elif model_name == 'FieldEntry':
+        return _get_model(*FIELD_ENTRY_MODEL.split('.'))
+    else:
+        return None
