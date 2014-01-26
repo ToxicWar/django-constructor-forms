@@ -1,7 +1,7 @@
 # coding: utf-8
 from __future__ import unicode_literals
 from django.test import TestCase
-from ..utils import unique_slug, get_model
+from ..utils import unique_slug, get_model, split_choices
 from ..models import Form as _Form, Field as _Field, FieldEntry as _FieldEntry, FormEntry as _FormEntry
 
 Form = get_model('Form')
@@ -43,3 +43,16 @@ class GetModelTest(TestCase):
         self.assertEqual(FormEntry, _FormEntry)
         self.assertEqual(FieldEntry, _FieldEntry)
         self.assertEqual(Model, None)
+
+
+class SplitChoicesTest(TestCase):
+    def test_simple_split_choices(self):
+        test_string = 'Val1, Val2, Val3'
+        right_list = ['Val1', 'Val2', 'Val3']
+
+        self.assertEqual(split_choices(test_string), right_list)
+
+    def test_empty_sting(self):
+        right_list = []
+
+        self.assertEqual(split_choices(''), right_list)

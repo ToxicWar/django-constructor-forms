@@ -19,6 +19,10 @@ def unique_slug(manager, slug_field, slug):
     return slug
 
 
+def split_choices(choices_string):
+    return filter(None, [x.strip() for x in choices_string.split(",")])
+
+
 def import_class(import_path):
     try:
         dot = import_path.rindex('.')
