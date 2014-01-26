@@ -92,6 +92,12 @@ class AbstractField(models.Model):
         fields_after.update(order=models.F('order') - 1)
         super(AbstractField, self).delete(*args, **kwargs)
 
+    def is_a(self, *args):
+        '''
+        Helper that returns True if the field's type is given in any arg.
+        '''
+        return self.field_type in args
+
 
 class AbstractFormEntry(models.Model):
     '''

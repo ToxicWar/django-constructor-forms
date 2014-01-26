@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from django.utils.timezone import now
 from ..utils import get_model
+from .. import fields
 
 
 Form = get_model('Form')
@@ -35,6 +36,13 @@ class FieldModelTest(TestCase):
 
         self.assertEqual(list(choices), [('value1', 'value1'), ('value2', 'value2'), ('value3', 'value3')])
 
+    def test_is_a_method(self):
+        form = Form.objects.create(title='Title')
+        field = Field.objects.create(label='Label', field_type=1, form=form)
+
+        self.assertTrue(field.is_a(fields.TEXT))
+        self.assertFalse(field.is_a(fields.EMAIL))
+        self.assertFalse(field.is_a(fields.DATE, fields.EMAIL))
 
 class FormEntryModelTest(TestCase):
     def test_simple_form_entry_model(self):
