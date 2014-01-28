@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 from .conf import MODIFICATION_WIDGETS, EXTRA_FIELDS
-from .utils import import_class
+from .utils import import_object
 
 
 # Constants for base field types.
@@ -70,11 +70,11 @@ MULTIPLE = (CHECKBOX_MULTIPLE, SELECT_MULTIPLE)
 
 # Modification widgets base fields.
 for field_id, widget_path in MODIFICATION_WIDGETS.items():
-    WIDGETS[field_id] = import_class(widget_path)
+    WIDGETS[field_id] = import_object(widget_path)
 
 # Add custom fields.
 for field_id, field_path, field_name in EXTRA_FIELDS:
     if field_id in CLASSES:
         raise ImproperlyConfigured('ID %s for field %s in FORMS_EXTRA_FIELDS already exists' % (field_id, field_name))
-    CLASSES[field_id] = import_class(field_path)
+    CLASSES[field_id] = import_object(field_path)
     NAMES += ((field_id, _(field_name)),)

@@ -23,7 +23,7 @@ def split_choices(choices_string):
     return filter(None, [x.strip() for x in choices_string.split(",")])
 
 
-def import_class(import_path):
+def import_object(import_path):
     try:
         dot = import_path.rindex('.')
     except ValueError:
@@ -32,8 +32,7 @@ def import_class(import_path):
     try:
         mod = import_module(module)
     except ImportError as e:
-        raise ImproperlyConfigured('Error importing module %s: "%s"' %
-                                   (module, e))
+        raise ImproperlyConfigured('Error importing module %s: "%s"' % (module, e))
     try:
         return getattr(mod, classname)
     except AttributeError:
