@@ -1,29 +1,29 @@
 # coding: utf-8
 from __future__ import unicode_literals
 from django import forms
-from .utils import get_model, split_choices
+from django.utils.timezone import now
+from .utils import get_model, split_choices, import_object
 from . import conf, fields as base_fields
 
 FormEntry = get_model('FormEntry')
 FieldEntry = get_model('FieldEntry')
 
-
 #                                   #
 #   Functions for flexible forms.   #
 #                                   #
 
-def pre_initial(form):
+def _pre_initial(form):
     pass
 
 
-def processing_arg_names(field, arg_names, field_args):
+def _processing_arg_names(field, arg_names, field_args):
     if 'max_length' in arg_names:
         field_args['max_length'] = 2000
     if 'choices' in arg_names:
         field_args['choices'] = field.get_choices()
 
 
-def add_css_classes(form, field, field_key, field_class):
+def _add_css_classes(form, field, field_key, field_class):
     css_class = field_class.__name__.lower()
     if field.required:
         css_class += ' required'
@@ -34,8 +34,14 @@ def add_css_classes(form, field, field_key, field_class):
         form.fields[field_key].widget.attrs['placeholder'] = field.placeholder_text
 
 
-def post_initial(form):
+def _post_initial(form):
     pass
+
+
+pre_initial = import_object(conf.FORM_PRE_INITIAL)
+processing_arg_names = import_object(conf.FORM_PROCESSING_ARG_NAMES)
+add_css_classes = import_object(conf.FORM_ADD_CSS_CLASSES)
+post_initial = import_object(conf.FORM_POST_INITIAL)
 
 
 class ConstructorForm(forms.ModelForm):
