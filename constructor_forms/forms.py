@@ -105,3 +105,38 @@ class ConstructorForm(forms.ModelForm):
             add_css_classes(self, field, field_key, field_class, *args, **kwargs)
 
         post_initial(self, *args, **kwargs)
+
+    def save(self, **kwargs):
+        '''
+        Save a FormEntry instance and assign submitted values to related FieldEntry instances for each form field.
+        '''
+        entry = super(ConstructorForm, self).save(commit=False)
+        entry.form = self.form
+        entry.creation_time = now()
+        entry.save()
+        entry_fields = entry.fields.values_list('field_id', flat=True)
+        _entry_fields = []
+
+        for field in self.form_fields:
+            field_key = field.slug
+            field_class = base_fields.CLASSES[field.field_type]
+            value = self.cleaned_data[field_key]
+            if isinstance(value, list):
+                value = ', '.join([item.strip() for item in value])
+
+            # get value in extra fields
+            if hasattr(field_class, 'get_value'):
+                value = field_class.get_value(value=value, **kwargs)
+
+            if field.id in entry_fields:
+                field_entry = entry.fields.get(field_id=field.id)
+                field_entry.value = value
+                field_entry.order = field.order
+                field_entry.save()
+            else:
+                entry_field_args = {'entry': entry, 'field_id': field.id, 'value': value, 'order': field.order}
+                _entry_fields.append(FieldEntry(**entry_field_args))
+
+        if _entry_fields:
+            FieldEntry.objects.bulk_create(_entry_fields)
+        return entry
