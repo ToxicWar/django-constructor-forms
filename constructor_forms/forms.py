@@ -12,18 +12,18 @@ FieldEntry = get_model('FieldEntry')
 #   Functions for flexible forms.   #
 #                                   #
 
-def _pre_initial(form):
+def _pre_initial(form, *args, **kwargs):
     pass
 
 
-def _processing_arg_names(field, arg_names, field_args):
+def _processing_arg_names(field, arg_names, field_args, *args, **kwargs):
     if 'max_length' in arg_names:
         field_args['max_length'] = 2000
     if 'choices' in arg_names:
         field_args['choices'] = field.get_choices()
 
 
-def _add_css_classes(form, field, field_key, field_class):
+def _add_css_classes(form, field, field_key, field_class, *args, **kwargs):
     css_class = field_class.__name__.lower()
     if field.required:
         css_class += ' required'
@@ -34,7 +34,7 @@ def _add_css_classes(form, field, field_key, field_class):
         form.fields[field_key].widget.attrs['placeholder'] = field.placeholder_text
 
 
-def _post_initial(form):
+def _post_initial(form, *args, **kwargs):
     pass
 
 
@@ -49,7 +49,7 @@ class ConstructorForm(forms.ModelForm):
         model = FormEntry
         exclude = ('creation_time', 'form')
 
-    def __init__(self, form, request, *args, **kwargs):
+    def __init__(self, form, *args, **kwargs):
         '''
         Dynamically add of the form fields.
         '''
@@ -61,7 +61,7 @@ class ConstructorForm(forms.ModelForm):
         if kwargs.get('instance'):
             for field_entry in kwargs['instance'].fields.all():
                 field_entries[field_entry.field_id] = field_entry.value
-        pre_initial(self)  # additional actions
+        pre_initial(self, *args, **kwargs)  # additional actions
         super(ConstructorForm, self).__init__(*args, **kwargs)
 
         # Set fields for form
@@ -75,7 +75,7 @@ class ConstructorForm(forms.ModelForm):
                 'widget': base_fields.WIDGETS.get(field.field_type, None)
             }
             arg_names = field_class.__init__.__func__.__code__.co_varnames
-            processing_arg_names(field, arg_names, field_args)  # processing unique arguments
+            processing_arg_names(field, arg_names, field_args, *args, **kwargs)  # processing unique arguments
 
             # Initial value for field, in order of preference:
             # 1. Value of field_entries
@@ -98,11 +98,10 @@ class ConstructorForm(forms.ModelForm):
             self.fields[field_key] = field_class(**field_args)
 
             # initial value in extra fields
-            get_initial = getattr(field_class, 'get_initial', None)
-            if get_initial:
-                self.initial[field_key] = get_initial()
+            if hasattr(field_class, 'get_initial'):
+                self.initial[field_key] = field_class.get_initial(*args, **kwargs)
 
             # Add identifying CSS classes to the field.
-            add_css_classes(self, field, field_key, field_class)
+            add_css_classes(self, field, field_key, field_class, *args, **kwargs)
 
-        post_initial(self)
+        post_initial(self, *args, **kwargs)
