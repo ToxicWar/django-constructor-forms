@@ -13,9 +13,6 @@ ConstructorForm = import_object(CONSTRUCTOR_FORM)
 
 
 class ConstructorFormTest(TestCase):
-    def setUp(self):
-        pass
-
     def create_test_forms(self):
         form = Form.objects.create(title='Test title')
         form.fields.create(label='field', field_type=1)
@@ -34,7 +31,10 @@ class ConstructorFormTest(TestCase):
 
         self.assertEqual(constructor_form.fields.keys(), right_fields)
         for field in right_fields:
-            self.assertTrue(template.find('id="id_%s"' % field) != -1)
+            try:
+                self.assertTrue(template.find('id="id_%s"' % field) != -1)
+            except AssertionError:
+                self.assertTrue(template.find('id="id_%s_0"' % field) != -1)
 
     def test_display_form_with_instance(self):
         form = self.create_test_forms()
