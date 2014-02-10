@@ -97,3 +97,36 @@ class ConstructorFormTest(TestCase):
         self.assertEqual(entry1.value, 'Test one line')
         self.assertEqual(entry2.value, 'Test \n Text')
         self.assertEqual(entry3.value, 'test@example.com')
+
+    def test_save_values_with_list(self):
+        form = self.create_test_forms()
+        form.fields.create(label='select', field_type=5, choices='val1, val2, val3')
+        data = {
+            'field': 'Test one line',
+            'text': 'Test \n Text',
+            'email': 'test@example.com',
+            'select': ['val1', 'val3']
+        }
+        constructor_form = ConstructorForm(form=form, data=data)
+        constructor_form.save()
+        entry_count = FormEntry.objects.count()
+        entry1 = FieldEntry.objects.get(field_id=4)
+
+        self.assertEqual(entry_count, 1)
+        self.assertEqual(entry1.value, 'val1, val3')
+
+    def test_save_with_instance(self):
+        form = self.create_test_forms()
+        data = {'field': 'Test', 'text': 'Test Test', 'email': 'test@example.com'}
+        ConstructorForm(form=form, data=data).save()  # created test form entry
+        entry = FormEntry.objects.get()
+        values_old = list(entry.fields.values_list('value', flat=True))
+
+        self.assertListEqual(values_old, ['Test', 'Test Test', 'test@example.com'])
+
+        data = {'field': 'Data', 'text': 'Data Test', 'email': 'data@example.com'}
+        constructor_form = ConstructorForm(form=form, instance=entry, data=data)
+        constructor_form.save()
+        values_new = list(entry.fields.values_list('value', flat=True))
+
+        self.assertListEqual(values_new, ['Data', 'Data Test', 'data@example.com'])
