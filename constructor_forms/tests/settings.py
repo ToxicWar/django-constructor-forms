@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'constructor_forms',
+    'constructor_forms.tests.test_app',
 )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -55,6 +56,10 @@ coverage_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'report
 PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
 )
+
+CONSTRUCTOR_FORMS_MODIFICATION_WIDGETS = {}
+
+CONSTRUCTOR_FORMS_EXTRA_FIELDS = []
 
 NOSE_ARGS = [
     '--with-coverage',
