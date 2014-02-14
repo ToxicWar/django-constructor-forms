@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.test import TestCase
 from ..conf import CONSTRUCTOR_FORM
-from ..fields import NAMES
+from ..fields import NAMES, TEXT, TEXTAREA, EMAIL, CHECKBOX, CHECKBOX_MULTIPLE
 from ..utils import import_object, get_model
 
 Form = get_model('Form')
@@ -15,9 +15,9 @@ ConstructorForm = import_object(CONSTRUCTOR_FORM)
 class ConstructorFormTest(TestCase):
     def create_test_forms(self):
         form = Form.objects.create(title='Test title')
-        form.fields.create(label='field', field_type=1)
-        form.fields.create(label='text', field_type=2)
-        form.fields.create(label='email', field_type=3)
+        form.fields.create(label='field', field_type=TEXT)
+        form.fields.create(label='text', field_type=TEXTAREA)
+        form.fields.create(label='email', field_type=EMAIL)
         return form
 
     def test_display_form_fields(self):
@@ -50,7 +50,7 @@ class ConstructorFormTest(TestCase):
 
     def test_display_form_with_initial_data(self):
         form = Form.objects.create(title='Title')
-        form.fields.create(label='field', field_type=1)
+        form.fields.create(label='field', field_type=TEXT)
         initial = {'field': 'Some text'}
         constructor_form = ConstructorForm(form=form, initial=initial)
         template = constructor_form.as_p()
@@ -59,7 +59,7 @@ class ConstructorFormTest(TestCase):
 
     def test_display_form_with_default(self):
         form = Form.objects.create(title='Title')
-        form.fields.create(label='field', field_type=1, default='Default value')
+        form.fields.create(label='field', field_type=TEXT, default='Default value')
         constructor_form = ConstructorForm(form=form)
         template = constructor_form.as_p()
 
@@ -67,7 +67,7 @@ class ConstructorFormTest(TestCase):
 
     def test_display_form_with_required_field(self):
         form = Form.objects.create(title='Title')
-        form.fields.create(label='field', field_type=1, required=True)
+        form.fields.create(label='field', field_type=TEXT, required=True)
         constructor_form = ConstructorForm(form=form)
         template = constructor_form.as_p()
 
@@ -75,7 +75,7 @@ class ConstructorFormTest(TestCase):
 
     def test_display_form_with_placeholder_text(self):
         form = Form.objects.create(title='Title')
-        form.fields.create(label='field', field_type=1, placeholder_text='Enter the text')
+        form.fields.create(label='field', field_type=TEXT, placeholder_text='Enter the text')
         constructor_form = ConstructorForm(form=form)
         template = constructor_form.as_p()
 
@@ -100,7 +100,7 @@ class ConstructorFormTest(TestCase):
 
     def test_save_values_with_list(self):
         form = self.create_test_forms()
-        form.fields.create(label='select', field_type=5, choices='val1, val2, val3')
+        form.fields.create(label='select', field_type=CHECKBOX_MULTIPLE, choices='val1, val2, val3')
         data = {
             'field': 'Test one line',
             'text': 'Test \n Text',
@@ -110,7 +110,7 @@ class ConstructorFormTest(TestCase):
         constructor_form = ConstructorForm(form=form, data=data)
         constructor_form.save()
         entry_count = FormEntry.objects.count()
-        entry1 = FieldEntry.objects.get(field_id=4)
+        entry1 = FieldEntry.objects.get(field_id=CHECKBOX)
 
         self.assertEqual(entry_count, 1)
         self.assertEqual(entry1.value, 'val1, val3')

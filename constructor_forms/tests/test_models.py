@@ -23,7 +23,7 @@ class FormModelTest(TestCase):
 class FieldModelTest(TestCase):
     def test_simple_field_model(self):
         form = Form.objects.create(title='Title')
-        field = Field.objects.create(label='Label', field_type=1, form=form)
+        field = Field.objects.create(label='Label', field_type=fields.TEXT, form=form)
 
         self.assertEqual(field.slug, 'label')
         self.assertEqual(str(field), 'Label')
@@ -31,14 +31,14 @@ class FieldModelTest(TestCase):
 
     def test_method_get_choices(self):
         form = Form.objects.create(title='Title')
-        field = Field.objects.create(label='Label', field_type=4, choices='value1, value2, value3', form=form)
+        field = Field.objects.create(label='Label', field_type=fields.CHECKBOX, choices='value1, value2, value3', form=form)
         choices = field.get_choices()
 
         self.assertEqual(list(choices), [('value1', 'value1'), ('value2', 'value2'), ('value3', 'value3')])
 
     def test_is_a_method(self):
         form = Form.objects.create(title='Title')
-        field = Field.objects.create(label='Label', field_type=1, form=form)
+        field = Field.objects.create(label='Label', field_type=fields.TEXT, form=form)
 
         self.assertTrue(field.is_a(fields.TEXT))
         self.assertFalse(field.is_a(fields.EMAIL))
