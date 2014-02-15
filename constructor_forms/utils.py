@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_model as _get_model
 from django.utils.importlib import import_module
-from .conf import FORM_MODEL, FIELD_MODEL, FORM_ENTRY_MODEL, FIELD_ENTRY_MODEL
+from .conf import FORM_MODEL, FIELD_MODEL, FORM_ENTRY_MODEL, FIELD_ENTRY_MODEL, CONSTRUCTOR_FORM
 
 
 def unique_slug(manager, slug_field, slug):
@@ -50,3 +50,7 @@ def get_model(model_name):
         return _get_model(*FIELD_ENTRY_MODEL.split('.'))
     else:
         return None
+
+
+def get_constructor_form():
+    return import_object(CONSTRUCTOR_FORM)
