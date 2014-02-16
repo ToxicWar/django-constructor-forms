@@ -50,3 +50,14 @@ FORM_ADD_CSS_CLASSES = getattr(settings, 'CONSTRUCTOR_FORMS_FORM_ADD_CSS_CLASSES
 
 # Post initial function.
 FORM_POST_INITIAL = getattr(settings, 'CONSTRUCTOR_FORMS_FORM_POST_INITIAL', 'constructor_forms.forms._post_initial')
+
+
+#                          #
+#   Form views settings.   #
+#                          #
+
+# Initial extra kwargs in detail form view
+DETAIL_VIEW_INITIAL_KWARGS = getattr(settings, 'CONSTRUCTOR_FORMS_DETAIL_VIEW_INITIAL_KWARGS', 'constructor_forms.views._initial_kwargs')
+
+# Initial extra context in sent form view
+SENT_VIEW_INITIAL_CONTEXT = getattr(settings, 'CONSTRUCTOR_FORMS_SENT_VIEW_INITIAL_CONTEXT', 'constructor_forms.views._initial_context')
