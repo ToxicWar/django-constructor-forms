@@ -46,6 +46,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
 
+    'constructor_forms.tests.test_app',
+
     'constructor_forms',
     'constructor_forms.tests.test_app',
 )
