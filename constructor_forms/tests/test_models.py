@@ -44,6 +44,19 @@ class FieldModelTest(TestCase):
         self.assertFalse(field.is_a(fields.EMAIL))
         self.assertFalse(field.is_a(fields.DATE, fields.EMAIL))
 
+    def test_delete_method(self):
+        form = Form.objects.create(title='Title')
+        field1 = Field.objects.create(label='Field 1', field_type=fields.TEXT, form=form)
+        field2 = Field.objects.create(label='Field 2', field_type=fields.TEXT, form=form)
+        field3 = Field.objects.create(label='Field 3', field_type=fields.TEXT, form=form)
+        field2.delete()
+        order_list = list(form.fields.values_list('order', flat=True))
+        right_order_list = [0, 1]
+
+        self.assertListEqual(order_list, right_order_list)
+        self.assertEqual(form.fields.all()[1].label, 'Field 3')
+
+
 class FormEntryModelTest(TestCase):
     def test_simple_form_entry_model(self):
         form = Form.objects.create(title='Title')
