@@ -1,0 +1,6 @@
+<h1>{{ form.title }}</h1>
+<form action="{{ form.get_absolute_url }}" method="post">
+    {% csrf_token %}
+    {{ constructor_form.as_p }}
+    <input type="submit" value="Send">
+</form>
